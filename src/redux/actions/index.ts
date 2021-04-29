@@ -1,1 +1,1 @@
-export { addItem, completeItem, deleteItem } from './actions';
+export { addItem, completeItem, deleteItem, setFilter } from './actions';

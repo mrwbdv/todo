@@ -5,7 +5,7 @@ const initialState: TItems = {
   items: [],
 };
 
-export const reducer = (state = initialState, action: AnyAction) => {
+export const todos = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case ITEM_ADDED_SUCCESS:
       return {

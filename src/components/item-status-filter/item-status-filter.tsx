@@ -1,42 +1,37 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Menu } from 'semantic-ui-react';
 
-const panes = [
-  {
-    id: 0,
-    menuItem: 'All',
-  },
-  {
-    id: 1,
-    menuItem: 'Active',
-  },
-  {
-    id: 2,
-    menuItem: 'Completed',
-  },
-];
+import { setFilter } from '../../redux/actions';
+import { getFilterSelector } from '../../redux/selectors';
+
+import { ITEM_VISIBILITY_FILTERS } from '../../redux/types';
 
 interface IProps {
   onTabChange: (item: string) => void;
 }
 
 export const ItemStatusFilter: React.FC<IProps> = ({ onTabChange }) => {
-  const [activeItem, setActiveItem] = useState('All');
+  const dispatch = useDispatch();
+
+  const filterItem = useSelector(getFilterSelector);
+
   const handleFilterChange = (item: string) => {
-    setActiveItem(item);
+    dispatch(setFilter(item));
     onTabChange(item);
   };
 
   return (
     <Container fluid>
       <Menu pointing secondary>
-        {panes.map(({ id, menuItem }) => {
+        {Object.keys(ITEM_VISIBILITY_FILTERS).map((filterKey) => {
+          const currentFilter = ITEM_VISIBILITY_FILTERS[filterKey];
           return (
             <Menu.Item
-              key={id}
-              active={activeItem === menuItem}
-              name={`${menuItem}`}
-              onClick={() => handleFilterChange(menuItem)}
+              key={`makecustomfuncforrandomid-${currentFilter}`}
+              active={filterItem === currentFilter}
+              name={`${currentFilter}`}
+              onClick={() => handleFilterChange(currentFilter)}
             />
           );
         })}

@@ -6,7 +6,6 @@ import { reducer } from './redux/reducer';
 export const config = {
   key: 'root',
   storage: storage,
-  whitelist: ['items'],
 };
 
 export const persisted = persistReducer(config, reducer);
