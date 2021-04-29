@@ -1,22 +1,46 @@
-import { Container, Tab } from 'semantic-ui-react';
+import { useState } from 'react';
+import { Container, Menu } from 'semantic-ui-react';
 
 const panes = [
   {
+    id: 0,
     menuItem: 'All',
-    onTabChange: () => console.log('All'),
   },
   {
+    id: 1,
     menuItem: 'Active',
-    onTabChange: () => console.log('Active'),
   },
   {
+    id: 2,
     menuItem: 'Completed',
-    onTabChange: () => console.log('Completed'),
   },
 ];
 
-export const ItemStatusFilter = () => (
-  <Container fluid>
-    <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
-  </Container>
-);
+interface IProps {
+  onTabChange: (item: string) => void;
+}
+
+export const ItemStatusFilter: React.FC<IProps> = ({ onTabChange }) => {
+  const [activeItem, setActiveItem] = useState('All');
+  const handleFilterChange = (item: string) => {
+    setActiveItem(item);
+    onTabChange(item);
+  };
+
+  return (
+    <Container fluid>
+      <Menu pointing secondary>
+        {panes.map(({ id, menuItem }) => {
+          return (
+            <Menu.Item
+              key={id}
+              active={activeItem === menuItem}
+              name={`${menuItem}`}
+              onClick={() => handleFilterChange(menuItem)}
+            />
+          );
+        })}
+      </Menu>
+    </Container>
+  );
+};

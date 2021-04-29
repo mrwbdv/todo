@@ -7,25 +7,31 @@ import { Button, Form, Grid } from 'semantic-ui-react';
 
 export const ItemAddForm = () => {
   //state
-  const [newItem, setNewItem] = useState({
-    id: '',
-    label: '',
-    important: false,
-    done: false,
-  });
+  const [label, setLabel] = useState<string>('');
 
   //dispatch
   const dispatch = useDispatch();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(addItem({ ...newItem, id: uuid() }));
-    setNewItem({ id: '', label: '', important: false, done: false });
+
+    const newItem = {
+      id: uuid(),
+      label,
+      createdAt: new Date().toDateString(),
+      completedAt: '',
+      completed: false,
+      important: false,
+    };
+
+    dispatch(addItem(newItem));
+    setLabel('');
+    console.log(newItem);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setNewItem({ ...newItem, [e.target.name]: e.target.value });
+    setLabel(e.target.value);
   };
 
   return (
@@ -38,7 +44,7 @@ export const ItemAddForm = () => {
                 fluid
                 name='label'
                 placeholder='add item'
-                value={newItem.label}
+                value={label}
                 onChange={handleChange}
               />
             </Grid.Column>

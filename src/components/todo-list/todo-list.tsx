@@ -1,20 +1,18 @@
 import { TodoListItem } from '../todo-list-item/todo-list-item';
-import { useSelector } from 'react-redux';
 
 import { TItem } from '../../redux/types';
 
-import { getItemsSelector } from '../../redux/selectors';
-export const TodoList = () => {
-  const items = useSelector(getItemsSelector);
+export const TodoList: React.FC<any> = ({ todos }) => {
   return (
     <div>
-      {items.length
-        ? items.map((item: TItem) => (
-            <div key={item.id}>
-              <TodoListItem {...item} />
-            </div>
-          ))
-        : null}
+      {todos?.map((item: TItem) => {
+        const { id, label } = item;
+        return (
+          <div key={id}>
+            <TodoListItem id={id} label={label} />
+          </div>
+        );
+      })}
     </div>
   );
 };
