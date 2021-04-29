@@ -4,19 +4,14 @@ import { Container, Divider } from 'semantic-ui-react';
 import { useState } from 'react';
 
 import { TItem } from './redux/types';
-import { getVisibleTodos } from './redux/selectors';
+import { getVisibleTodos, getFilterSelector } from './redux/selectors';
 import { useSelector } from 'react-redux';
 
 export const App = () => {
-  const [active, setActive] = useState('All');
-
   const filteredData = useSelector(getVisibleTodos);
+  const visibilityFilter = useSelector(getFilterSelector);
 
-  console.log(filteredData);
-
-  const handleActive = (item: string) => {
-    setActive(item);
-  };
+  let statistics: IStatistics;
 
   interface IDay {
     [key: number]: string;
@@ -36,7 +31,7 @@ export const App = () => {
     6: 'Sat',
   };
 
-  const dayz = [
+  const days = [
     {
       id: 1,
       day: 'Mon',
@@ -67,17 +62,25 @@ export const App = () => {
     },
   ];
 
-  if (active === 'Completed') {
+  if (visibilityFilter === 'Completed') {
+    statistics = getTodoStatistics(filteredData);
+    console.log(statistics);
+  }
+
+  function getTodoStatistics(data: Array<TItem>): IStatistics {
     const statistics: IStatistics = {};
-    const days = filteredData?.map((item: TItem) => {
+
+    const weekDays = data?.map((item: TItem) => {
       const copmletedDay = new Date(item.completedAt).getDay();
       return daysMap[copmletedDay];
     });
 
-    days?.forEach((weekDay: string) => {
-      const count = countDays(days, weekDay);
+    weekDays?.forEach((weekDay: string) => {
+      const count = countDays(weekDays, weekDay);
       statistics[weekDay] = count;
     });
+
+    return statistics;
   }
 
   function countDays(weekDays: string[], day: string) {
@@ -93,11 +96,18 @@ export const App = () => {
   return (
     <Container text>
       <AppHeader />
-      <ItemStatusFilter onTabChange={handleActive} />
+      <ItemStatusFilter />
       <Divider hidden />
       <ItemAddForm />
       <Divider hidden />
       <TodoList todos={filteredData} />
+      {visibilityFilter === 'Completed' && (
+        <div>
+          {days.map(({ id, day }) => {
+            return <div>{statistics[day]}</div>;
+          })}
+        </div>
+      )}
     </Container>
   );
 };
